@@ -1,0 +1,4 @@
+streamlit_back_camera_input
+streamlit
+numpy
+opencv-python
