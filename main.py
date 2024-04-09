@@ -1,0 +1,27 @@
+import cv2
+import numpy as np
+import streamlit as st
+from camera_input_live import camera_input_live
+from streamlit_back_camera_input import back_camera_input
+
+image = back_camera_input()
+if image:
+    st.image(image)
+else:
+    image = camera_input_live()
+
+    if image is not None:
+        st.image(image)
+        bytes_data = image.getvalue()
+        cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+
+        detector = cv2.QRCodeDetector()
+
+        data, bbox, straight_qrcode = detector.detectAndDecode(cv2_img)
+
+        if data:
+            st.write("# Found QR code")
+            st.write(data)
+            with st.expander("Show details"):
+                st.write("BBox:", bbox)
+                st.write("Straight QR code:", straight_qrcode)
